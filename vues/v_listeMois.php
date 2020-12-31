@@ -14,6 +14,7 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 ?>
+
 <h2>Mes fiches de frais</h2>
 <div class="row">
     <div class="col-md-4">
@@ -24,7 +25,9 @@
               method="post" role="form">
             <div class="form-group">
                 <label for="lstMois" accesskey="n">Mois : </label>
-                <select id="lstMois" name="lstMois" class="form-control">
+                <select id="lstMois" 
+                        name="lstMois" 
+                        class="form-control">
                     <?php
                     foreach ($lesMois as $unMois) {
                         $mois = $unMois['mois'];
@@ -46,9 +49,15 @@
 
                 </select>
             </div>
-            <input id="ok" type="submit" value="Valider" class="btn btn-success" 
+            <input id="ok" 
+                   type="submit" 
+                   value="Valider" 
+                   class="btn btn-success" 
                    role="button">
-            <input id="annuler" type="reset" value="Effacer" class="btn btn-danger" 
+            <input id="annuler" 
+                   type="reset" 
+                   value="Effacer" 
+                   class="btn btn-danger" 
                    role="button">
         </form>
     </div>

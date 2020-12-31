@@ -14,6 +14,8 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 ?>
+
+<!-- Formulaire d'identification -->
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
@@ -29,8 +31,11 @@
                                 <span class="input-group-addon">
                                     <i class="glyphicon glyphicon-user"></i>
                                 </span>
-                                <input class="form-control" placeholder="Login"
-                                       name="login" type="text" maxlength="45">
+                                <input class="form-control" 
+                                       placeholder="Login"
+                                       name="login" 
+                                       type="text" 
+                                       maxlength="45">
                             </div>
                         </div>
                         <div class="form-group">
@@ -39,12 +44,15 @@
                                     <i class="glyphicon glyphicon-lock"></i>
                                 </span>
                                 <input class="form-control"
-                                       placeholder="Mot de passe" name="mdp"
-                                       type="password" maxlength="45">
+                                       placeholder="Mot de passe" 
+                                       name="mdp"
+                                       type="password" 
+                                       maxlength="45">
                             </div>
                         </div>
                         <input class="btn btn-lg btn-success btn-block"
-                               type="submit" value="Se connecter">
+                               type="submit" 
+                               value="Se connecter">
                     </fieldset>
                 </form>
             </div>

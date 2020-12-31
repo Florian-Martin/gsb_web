@@ -14,6 +14,7 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 ?>
+
 <hr>
 <div class="row">
     <div class="panel panel-info">
@@ -38,8 +39,10 @@
                     <td> <?php echo $date ?></td>
                     <td> <?php echo $libelle ?></td>
                     <td><?php echo $montant ?></td>
-                    <td><a href="index.php?uc=gererFrais&action=supprimerFrais&idFrais=<?php echo $id ?>" 
-                           onclick="return confirm('Voulez-vous vraiment supprimer ce frais?');">Supprimer ce frais</a></td>
+                    <td><a href="index.php?uc=gererFrais&action=supprimerFrais&idFrais=
+                        <?php echo $id ?>" 
+                           onclick="return confirm('Voulez-vous vraiment supprimer ce frais?');">
+                            Supprimer ce frais</a></td>
                 </tr>
                 <?php
             }
@@ -55,20 +58,29 @@
               method="post" role="form">
             <div class="form-group">
                 <label for="txtDateHF">Date (jj/mm/aaaa): </label>
-                <input type="text" id="txtDateHF" name="dateFrais" 
-                       class="form-control" id="text">
+                <input type="text" 
+                       id="txtDateHF" 
+                       name="dateFrais" 
+                       class="form-control" 
+                       id="text">
             </div>
             <div class="form-group">
                 <label for="txtLibelleHF">Libellé</label>             
-                <input type="text" id="txtLibelleHF" name="libelle" 
-                       class="form-control" id="text">
+                <input type="text" 
+                       id="txtLibelleHF" 
+                       name="libelle" 
+                       class="form-control" 
+                       id="text">
             </div> 
             <div class="form-group">
                 <label for="txtMontantHF">Montant : </label>
                 <div class="input-group">
                     <span class="input-group-addon">€</span>
-                    <input type="text" id="txtMontantHF" name="montant" 
-                           class="form-control" value="">
+                    <input type="text" 
+                           id="txtMontantHF" 
+                           name="montant" 
+                           class="form-control" 
+                           value="">
                 </div>
             </div>
             <button class="btn btn-success" type="submit">Ajouter</button>
