@@ -14,6 +14,9 @@
  * @link      http://www.php.net/manual/fr/book.pdo.php PHP Data Objects sur php.net
  */
 
+
+// TODO : Merge les 2 descriptions
+
 /**
  * Classe d'accès aux données.
  *
@@ -83,20 +86,22 @@ class PdoGsb
     }
 
     /**
-     * Retourne les informations d'un visiteur
+     * Retourne les informations d'un utilisateur
      *
-     * @param String $login Login du visiteur
-     * @param String $mdp   Mot de passe du visiteur
+     * @param String $login Login de l'utilisateur
+     * @param String $mdp   Mot de passe de l'utilisateur
      *
      * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
      */
-    public function getInfosVisiteur($login, $mdp)
+    public function getInfosUtilisateur($login, $mdp)
     {
+        // rajouter la récupération du libellé de la catégorie d'employé
         $requetePrepare = PdoGsb::$monPdo->prepare(
-            'SELECT visiteur.id AS id, visiteur.nom AS nom, '
-            . 'visiteur.prenom AS prenom '
-            . 'FROM visiteur '
-            . 'WHERE visiteur.login = :unLogin AND visiteur.mdp = :unMdp'
+            'SELECT utilisateur.id AS id, utilisateur.nom AS nom, '
+            . 'utilisateur.prenom AS prenom, '
+            . 'utilisateur.type_utilisateur AS type_utilisateur '
+            . 'FROM utilisateur '
+            . 'WHERE utilisateur.login = :unLogin AND utilisateur.mdp = :unMdp'
         );
         $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
         $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);

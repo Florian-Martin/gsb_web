@@ -20,6 +20,7 @@ require_once 'includes/class.pdogsb.inc.php';
 session_start();
 $pdo = PdoGsb::getPdoGsb();
 $estConnecte = estConnecte();
+// if ($estConnecte){ $catgEmploye = $_SESSION['catg']; }
 
 require 'vues/v_entete.php';
 

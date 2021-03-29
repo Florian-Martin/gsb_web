@@ -16,6 +16,9 @@
 
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 
+/*
+ * Attente de la réponse des profs sur le forum pour supprimer ou non ce test
+ */
 if (!$uc) {
     $uc = 'demandeconnexion';
 }

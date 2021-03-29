@@ -17,6 +17,7 @@
 
 <div id="accueil">
     <h2>
+        <!-- Eventuellement supprimer "Visiteur : " ou afficher une valeur selon le test suivant : if ($catg === 'comptable') { ..... } -->
         Gestion des frais<small> - Visiteur : 
             <?php 
             echo $_SESSION['prenom'] . ' ' . $_SESSION['nom']
@@ -29,8 +30,7 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <span class="glyphicon glyphicon-bookmark"></span>
-                    Navigation
+                    <span class="glyphicon glyphicon-bookmark"></span> Navigation
                 </h3>
             </div>
             <div class="panel-body">
