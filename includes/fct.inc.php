@@ -36,7 +36,6 @@ function estConnecte()
  */
 function connecter($id_usr, $nom, $prenom, $type_usr)
 {
-    // rajouter $_SESSION['catg'] = $catg;
     $_SESSION['id_usr'] = $id_usr;
     $_SESSION['nom'] = $nom;
     $_SESSION['prenom'] = $prenom;

@@ -17,10 +17,13 @@
 
 <div id="accueil">
     <h2>
-        <!-- Eventuellement supprimer "Visiteur : " ou afficher une valeur selon le test suivant : if ($catg === 'comptable') { ..... } -->
-        Gestion des frais<small> - Visiteur : 
-            <?php 
-            echo $_SESSION['prenom'] . ' ' . $_SESSION['nom']
+        Gestion des frais<small> - <?php
+            if ($type_usr == 2) {
+                echo 'Comptable : ';
+            } else {
+                echo 'Visiteur : ';
+            }
+            echo $_SESSION['prenom'] . ' ' . $_SESSION['nom'];
             ?></small>
     </h2>
 </div>
@@ -40,12 +43,27 @@
                            class="btn btn-success btn-lg" 
                            role="button">
                             <span class="glyphicon glyphicon-pencil"></span>
-                            <br>Renseigner la fiche de frais</a>
-                        <a href="index.php?uc=etatFrais&action=selectionnerMois"
-                           class="btn btn-primary btn-lg" 
-                           role="button">
-                            <span class="glyphicon glyphicon-list-alt"></span>
-                            <br>Afficher mes fiches de frais</a>
+                            <br>
+                            <?php
+                            if ($type_usr == 2) {
+                                echo 'Valider les fiches de frais';
+                            } else {
+                                echo 'Renseigner la fiche de frais';
+                            }
+                            ?>
+                        </a>
+                        <a href = "index.php?uc=etatFrais&action=selectionnerMois"
+                           class = "btn btn-primary btn-lg"
+                           role = "button">
+                            <span class = "glyphicon glyphicon-list-alt"></span>
+                            <br>
+                            <?php
+                            if ($type_usr == 2) {
+                                echo 'Suivre le paiement des fiches de frais';
+                            } else {
+                                echo 'Afficher mes fiches de frais';
+                            }
+                            ?></a>
                     </div>
                 </div>
             </div>

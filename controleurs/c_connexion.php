@@ -38,7 +38,6 @@ case 'valideConnexion':
         $prenom = $utilisateur['prenom'];
         $type_usr = $utilisateur['type_utilisateur'];
         
-        // rajouter $catg dans les params de connecter()
         connecter($id, $nom, $prenom, $type_usr);
         header('Location: index.php');
     }
