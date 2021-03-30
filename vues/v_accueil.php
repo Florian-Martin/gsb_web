@@ -39,41 +39,17 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12 col-md-12">
-                        <a href="index.php?uc=gererFrais&action=saisirFrais"
-                           class="btn btn-success btn-lg" 
-                           role="button">
-                            <span <?php if ($type_usr == 2) { ?> 
-                                    class="glyphicon glyphicon-ok" <?php
-                                } else {
-                                    ?> class="glyphicon glyphicon-pencil"
-                                <?php } ?>>
-                            </span>
-                            <br>
-                            <?php
-                            if ($type_usr == 2) {
-                                echo 'Valider les fiches de frais';
-                            } else {
-                                echo 'Renseigner la fiche de frais';
-                            }
-                            ?>
-                        </a>
-                        <a href = "index.php?uc=etatFrais&action=selectionnerMois"
-                           class = "btn btn-primary btn-lg"
-                           role = "button">
-                            <span <?php if ($type_usr == 2) { ?> 
-                                    class="glyphicon glyphicon-eur" <?php
-                                } else {
-                                    ?> class="glyphicon glyphicon-list-alt"
-                                <?php } ?>>
-                            </span>
-                            <br>
-                            <?php
-                            if ($type_usr == 2) {
-                                echo 'Suivre le paiement des fiches de frais';
-                            } else {
-                                echo 'Afficher mes fiches de frais';
-                            }
-                            ?></a>
+                        <?php
+                        switch ($type_usr) {
+                            case '1':
+                                include_once 'v_accueil_visiteur.inc.php';
+                                break;
+
+                            case '2':
+                                include_once 'v_accueil_comptable.inc.php';
+                                break;
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

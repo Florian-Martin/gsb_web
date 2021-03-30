@@ -6,8 +6,8 @@
  *
  * @category  PPE
  * @package   GSB
- * @author    Réseau CERTA <contact@reseaucerta.org>
  * @author    José GIL <jgil@ac-nice.fr>
+ * @author    Florian MARTIN
  * @copyright 2017 Réseau CERTA
  * @license   Réseau CERTA
  * @version   GIT: <0>
@@ -39,7 +39,7 @@
             </li>
             <li <?php if ($uc == 'gererFrais') { ?>
                     class="active"<?php } ?>>
-                <a href="index.php?uc=gererFrais&action=saisirFrais">
+                <a href="index.php?uc=gererFrais&action=validerFrais">
                     <span class="glyphicon glyphicon-ok"></span>
                     Valider les fiches de frais
                 </a>

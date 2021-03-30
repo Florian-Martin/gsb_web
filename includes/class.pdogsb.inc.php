@@ -491,4 +491,44 @@ class PdoGsb
         $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
         $requetePrepare->execute();
     }
+    
+    /**
+     * Clôture lors d'un mois N les fiches de frais du mois N-1
+     * 
+     * @param String $mois Le mois N-1 dont il faut clôturer les fiches ayant  
+     *                     idetat = 'CR'
+     */
+    public function clotureMoisPrecedent($mois) 
+    {
+        // Récupération des id de visiteurs dont il faut clôturer les fiches 
+        $lesIdVisiteurs = $this->getLesVisiteursACloturer($mois);
+     
+        if ($lesIdVisiteurs) {
+            foreach ($lesIdVisiteurs as $unIdVisiteur) {
+                $this->majEtatFicheFrais($unIdVisiteur['idVisiteur'], $mois, 'CL');
+            }  
+        }
+    }
+    
+    
+    /**
+     * Retourne toutes les fiches de frais ayant pour état 'CR'
+     * 
+     * @param String $mois Le mois pour lequel rechercher les fiches
+     * 
+     * @return             La liste des visiteurs ayant une fiche créée à un mois donné
+     */
+    public function getLesVisiteursACloturer($mois) 
+    {
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+             'SELECT idVisiteur '
+                . 'FROM fichefrais '
+                . 'WHERE fichefrais.idetat = \'CR\' '
+                . 'AND fichefrais.mois = :unMois'   
+        );
+        $requetePrepare->bindParam('unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        
+        return $requetePrepare->fetchAll();
+    }
 }
