@@ -42,7 +42,12 @@
                         <a href="index.php?uc=gererFrais&action=saisirFrais"
                            class="btn btn-success btn-lg" 
                            role="button">
-                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span <?php if ($type_usr == 2) { ?> 
+                                    class="glyphicon glyphicon-ok" <?php
+                                } else {
+                                    ?> class="glyphicon glyphicon-pencil"
+                                <?php } ?>>
+                            </span>
                             <br>
                             <?php
                             if ($type_usr == 2) {
@@ -55,7 +60,12 @@
                         <a href = "index.php?uc=etatFrais&action=selectionnerMois"
                            class = "btn btn-primary btn-lg"
                            role = "button">
-                            <span class = "glyphicon glyphicon-list-alt"></span>
+                            <span <?php if ($type_usr == 2) { ?> 
+                                    class="glyphicon glyphicon-eur" <?php
+                                } else {
+                                    ?> class="glyphicon glyphicon-list-alt"
+                                <?php } ?>>
+                            </span>
                             <br>
                             <?php
                             if ($type_usr == 2) {
