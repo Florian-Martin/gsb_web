@@ -2,24 +2,6 @@
 /**
  * Classe d'accès aux données.
  *
- * PHP Version 7
- *
- * @category  PPE
- * @package   GSB
- * @author    Cheri Bibi - Réseau CERTA <contact@reseaucerta.org>
- * @author    José GIL - CNED <jgil@ac-nice.fr>
- * @copyright 2017 Réseau CERTA
- * @license   Réseau CERTA
- * @version   GIT: <0>
- * @link      http://www.php.net/manual/fr/book.pdo.php PHP Data Objects sur php.net
- */
-
-
-// TODO : Merge les 2 descriptions
-
-/**
- * Classe d'accès aux données.
- *
  * Utilise les services de la classe PDO
  * pour l'application GSB
  * Les attributs sont tous statiques,
@@ -33,6 +15,7 @@
  * @package   GSB
  * @author    Cheri Bibi - Réseau CERTA <contact@reseaucerta.org>
  * @author    José GIL <jgil@ac-nice.fr>
+ * @author    Florian MARTIN <florian.martin7469@gmail.com>
  * @copyright 2017 Réseau CERTA
  * @license   Réseau CERTA
  * @version   Release: 1.0
@@ -481,7 +464,7 @@ class PdoGsb
     public function majEtatFicheFrais($idVisiteur, $mois, $etat)
     {
         $requetePrepare = PdoGSB::$monPdo->prepare(
-            'UPDATE ficheFrais '
+            'UPDATE fichefrais '
             . 'SET idetat = :unEtat, datemodif = now() '
             . 'WHERE fichefrais.idvisiteur = :unIdVisiteur '
             . 'AND fichefrais.mois = :unMois'
@@ -501,34 +484,63 @@ class PdoGsb
     public function clotureMoisPrecedent($mois) 
     {
         // Récupération des id de visiteurs dont il faut clôturer les fiches 
-        $lesIdVisiteurs = $this->getLesVisiteursACloturer($mois);
+        $lesVisiteurs = $this->getLesVisiteursCompta($mois, 'CR');
      
-        if ($lesIdVisiteurs) {
-            foreach ($lesIdVisiteurs as $unIdVisiteur) {
-                $this->majEtatFicheFrais($unIdVisiteur['idVisiteur'], $mois, 'CL');
+        if ($lesVisiteurs) {
+            foreach ($lesVisiteurs as $unVisiteur) {
+                $this->majEtatFicheFrais($unVisiteur['id'], $mois, 'CL');
             }  
         }
     }
     
-    
     /**
-     * Retourne toutes les fiches de frais ayant pour état 'CR'
+     * Retourne une liste de visiteurs ayant une fiche de frais existante dans un
+     * état donné et pour un mois donné
      * 
-     * @param String $mois Le mois pour lequel rechercher les fiches
+     * @param String $mois  Le mois pour lequel rechercher les fiches
+     * @param String $etat  L'état des fiches pour lesquelles lister les visiteurs
      * 
-     * @return             La liste des visiteurs ayant une fiche créée à un mois donné
+     * @return              Retourne un tableau associatif avec id, nom et prénom
+     *                      de visiteurs         
      */
-    public function getLesVisiteursACloturer($mois) 
+    public function getLesVisiteursCompta($mois, $etat)
     {
         $requetePrepare = PdoGsb::$monPdo->prepare(
-             'SELECT idVisiteur '
-                . 'FROM fichefrais '
-                . 'WHERE fichefrais.idetat = \'CR\' '
-                . 'AND fichefrais.mois = :unMois'   
+        'SELECT utilisateur.id, utilisateur.nom, utilisateur.prenom '
+        . 'FROM fichefrais '
+        . 'JOIN utilisateur ON utilisateur.id = fichefrais.idvisiteur '
+        . 'WHERE fichefrais.idetat = :unEtat '
+        . 'AND fichefrais.mois = :unMois '
+        . 'ORDER BY utilisateur.nom'   
         );
+        $requetePrepare->bindParam('unEtat', $etat, PDO::PARAM_STR);
         $requetePrepare->bindParam('unMois', $mois, PDO::PARAM_STR);
+
         $requetePrepare->execute();
         
         return $requetePrepare->fetchAll();
     }
+    
+    
+    /**
+     * Modifie le nombre de justificatifs d'une fiche de frais 
+     * 
+     * @param String $visiteur  L'id du visiteur concerné
+     * @param String $mois      Le mois de la fiche concernée
+     * @param Integer $nb       Le nombre de justificatifs remplaçant l'ancien nombre
+     */
+    public function setNbJustificatifs($idVisiteur, $mois, $nb) {
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+            'UPDATE fichefrais '
+            . 'SET nbjustificatifs = :unNb '
+            . 'WHERE fichefrais.idvisiteur = :unIdVisiteur '
+            . 'AND fichefrais.mois = :unMois'
+        );
+        $requetePrepare->bindParam(':unNb', $nb, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->execute();
+    }
 }
+
+

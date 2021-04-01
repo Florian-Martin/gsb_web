@@ -146,3 +146,22 @@ a.thumbnail.active {
     border-color: #ff8800;
 }
 
+#valid-cpt {
+    color: #ff8800;
+}
+
+.panel-info > .panel-heading {
+    color: #fff;
+    background-color: #ff8800; 
+}
+.panel-info {
+    border-color: #ff8800;
+}
+
+.table th, .table td{
+    border-color: #ff8800 !important;
+}
+
+#rounded {
+    border-radius: 10px !important;
+}
