@@ -190,6 +190,7 @@ class PdoGsb
 
     /**
      * Met à jour la table ligneFraisForfait
+     * 
      * Met à jour la table ligneFraisForfait pour un visiteur et
      * un mois donné en enregistrant les nouveaux montants
      *
@@ -341,13 +342,13 @@ class PdoGsb
     }
 
     /**
-     * Crée un nouveau frais hors forfait pour un visiteur un mois donné
-     * à partir des informations fournies en paramètre
+     * Crée un nouveau frais hors forfait pour un visiteur et un mois donné
+     * à partir des informations fournies en paramètres
      *
      * @param String $idVisiteur ID du visiteur
      * @param String $mois       Mois sous la forme aaaamm
      * @param String $libelle    Libellé du frais
-     * @param String $date       Date du frais au format français jj//mm/aaaa
+     * @param String $date       Date du frais au format français jj/mm/aaaa
      * @param Float  $montant    Montant du frais
      *
      * @return null
@@ -525,7 +526,7 @@ class PdoGsb
     /**
      * Modifie le nombre de justificatifs d'une fiche de frais 
      * 
-     * @param String $visiteur  L'id du visiteur concerné
+     * @param String $idVisiteur  L'id du visiteur concerné
      * @param String $mois      Le mois de la fiche concernée
      * @param Integer $nb       Le nombre de justificatifs remplaçant l'ancien nombre
      */
@@ -540,6 +541,24 @@ class PdoGsb
         $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
         $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
         $requetePrepare->execute();
+    }
+    
+    /**
+     * Retourne les informations d'un frais hors forfait
+     * 
+     * @param Integer $idFraisHF    L'identifiant du frais HF 
+     * @return                      Un tableau associatif contenant les informations
+     *                              relatives à un frais hors forfait
+     */
+    public function getUnFraisHF($idFraisHF){
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            'SELECT * FROM lignefraishorsforfait '
+            . 'WHERE lignefraishorsforfait.id = :unFraisHF'
+        );
+        $requetePrepare->bindParam('unFraisHF', $idFraisHF, PDO::PARAM_INT);
+        $requetePrepare->execute();
+        
+        return $requetePrepare->fetch();
     }
 }
 

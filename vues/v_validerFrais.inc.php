@@ -50,7 +50,9 @@ if ($leVisiteur) {
                         <?php
                     }
                     ?>
-                    <button class="btn btn-success" type="submit">Corriger</button>
+                    <button class="btn btn-success" type="submit"
+                            onclick="return confirm('Confirmez-vous la modification ?');">
+                        Corriger</button>
                     <button class="btn btn-danger" type="reset">Réinitialiser</button>
                     <?php
                     ?>
@@ -84,11 +86,19 @@ if ($leVisiteur) {
                             <td> <?php echo $libelle ?></td>
                             <td> <?php echo $montant ?></td>
                             <td>          
-                                <form action="index.php?uc=gererFrais&action=validerCreationFrais" 
-                                      method="get" role="form">
+                                <form action="index.php?uc=gererFrais" 
+                                      method="post" role="form">
 
-                                    <button class="btn btn-success" type="submit">Reporter</button>
-                                    <button class="btn btn-danger" type="reset">Refuser</button>
+                                    <a href="index.php?uc=gererFrais&action=reporterFraisHF&idFrais=<?php echo $id ?>"
+                                       class="btn btn-success"
+                                       onclick="return confirm('Confirmez-vous le report de ce frais?');">
+                                        Reporter
+                                    </a>
+                                    <a href="index.php?uc=gererFrais&action=refuserFraisHF&idFrais=<?php echo $id ?>"
+                                       class="btn btn-danger"
+                                       onclick="return confirm('Confirmez-vous le refus de ce frais?');">
+                                        Refuser
+                                    </a>
                                 </form>
                             </td>
                         </tr>
@@ -99,11 +109,8 @@ if ($leVisiteur) {
             </table>
         </div>
         <div>
-            <!-- TODO: Afficher le nombre de frais HF du visiteur et le MAJ à chaque 
-                        report ou refus -->
             Nombre de justificatifs : 
-            <input id="rounded" disabled="disabled" value="<?php 
-            echo $nbJustificatifs ?>">
+            <input id="rounded" disabled="disabled" value="<?php echo $nbJustificatifs ?>">
         </div>
         <div>
             <a href="index.php?uc=gererFrais&action=validerFiche"
