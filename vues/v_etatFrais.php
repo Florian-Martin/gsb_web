@@ -30,7 +30,8 @@
         <tr>
             <?php
             foreach ($lesFraisForfait as $unFraisForfait) {
-                $libelle = $unFraisForfait['libelle']; ?>
+                $libelle = $unFraisForfait['libelle'];
+                ?>
                 <th> <?php echo htmlspecialchars($libelle) ?></th>
                 <?php
             }
@@ -39,7 +40,8 @@
         <tr>
             <?php
             foreach ($lesFraisForfait as $unFraisForfait) {
-                $quantite = $unFraisForfait['quantite']; ?>
+                $quantite = $unFraisForfait['quantite'];
+                ?>
                 <td class="qteForfait"><?php echo $quantite ?> </td>
                 <?php
             }
@@ -60,13 +62,28 @@
         foreach ($lesFraisHorsForfait as $unFraisHorsForfait) {
             $date = $unFraisHorsForfait['date'];
             $libelle = htmlspecialchars($unFraisHorsForfait['libelle']);
-            $montant = $unFraisHorsForfait['montant']; ?>
+            $montant = $unFraisHorsForfait['montant'];
+            ?>
             <tr>
                 <td><?php echo $date ?></td>
                 <td><?php echo $libelle ?></td>
                 <td><?php echo $montant ?></td>
             </tr>
             <?php
+        }
+        if ($lesFraisRefuses) {
+            foreach ($lesFraisRefuses as $unFraisRefuse) {
+                $date = $unFraisRefuse['date'];
+                $libelle = htmlspecialchars($unFraisRefuse['libelle']);
+                $montant = $unFraisRefuse['montant'];
+                ?>
+                <tr>
+                    <td><?php echo $date ?></td>
+                    <td><?php echo $libelle ?></td>
+                    <td><?php echo $montant ?></td>
+                </tr>
+                <?php
+            }
         }
         ?>
     </table>

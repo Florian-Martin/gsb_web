@@ -560,6 +560,63 @@ class PdoGsb
         
         return $requetePrepare->fetch();
     }
+    
+    /**
+     * Mémorise un frais hors forfait invalide et refusé par un comptable
+     * 
+     * Enregistre les informations d'un frais hors forfait jugé invalide pour permettre
+     * au visiteur concerné d'en être informé
+     * 
+     * @param String $idVisiteur    L'identifiant du visiteur
+     * @param String $mois          Le mois du frais au format AAAAMM
+     * @param String $libelle       Le libellé du frais
+     * @param String $date          La date effective du frais au format AAAA-MM-JJ
+     * @param Float $montant        Le montant du frais
+     */
+    public function creeFraisRefuse($idVisiteur, $mois, $libelle, $date, $montant) {
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+            'INSERT INTO fraishfrefuse '
+            . 'VALUES (null, :unIdVisiteur,:unMois, :unLibelle, :uneDate,'
+            . ':unMontant) '
+        );
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unLibelle', $libelle, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':uneDate', $date, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMontant', $montant, PDO::PARAM_INT);
+        $requetePrepare->execute();
+    }
+
+    
+    /**
+     * Retourne sous forme d'un tableau associatif toutes les lignes de frais
+     * hors forfait refusées concernées par les deux arguments.
+     * La boucle foreach ne peut être utilisée ici car on procède
+     * à une modification de la structure itérée - transformation du champ date-
+     *
+     * @param String $idVisiteur ID du visiteur
+     * @param String $mois       Mois sous la forme aaaamm
+     *
+     * @return                   Tous les champs des lignes de frais hors forfait 
+     *                           refusés sous la forme d'un tableau associatif
+     */
+    public function getLesFraisRefuses($idVisiteur, $mois)
+    {
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            'SELECT * FROM fraishfrefuse '
+            . 'WHERE fraishfrefuse.idvisiteur = :unIdVisiteur '
+            . 'AND fraishfrefuse.mois = :unMois'
+        );
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        $lesLignes = $requetePrepare->fetchAll();
+        for ($i = 0; $i < count($lesLignes); $i++) {
+            $date = $lesLignes[$i]['date'];
+            $lesLignes[$i]['date'] = dateAnglaisVersFrancais($date);
+        }
+        return $lesLignes;
+    }
 }
 
 

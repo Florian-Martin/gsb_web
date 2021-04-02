@@ -80,7 +80,7 @@ switch ($action) {
         $montant = $leFraisHF['montant'];
 
         // Report du frais HF au mois prochain
-        // Puis suppression du frais de la liste de frais HF du mois courant
+        // Puis suppression du frais de la liste de frais HF du mois N-1
         if ($pdo->estPremierFraisMois($leVisiteur, $mois)) {
             $pdo->creeNouvellesLignesFrais($leVisiteur, $mois);
         }
@@ -94,8 +94,26 @@ switch ($action) {
 
     case 'refuserFraisHF':
         $idFraisHF = filter_input(INPUT_GET, 'idFrais', FILTER_SANITIZE_STRING);
-        $_SESSION['modifComptable'] = "Le frais hors forfait a bien été supprimé";
 
+        // Récupération des informations du frais à supprimer
+        $leFraisHF = $pdo->getUnFraisHF($idFraisHF);
+        $libelle = "REFUSE : " . $leFraisHF['libelle'];
+        $date = $leFraisHF['date'];
+        $montant = $leFraisHF['montant'];
+
+        // Troncature du libellé si après ajout du préfixe "REFUSE" la taille 
+        // du texte dépasse la taille maximale du champ concerné dans la base
+        if (strlen($libelle) > 100) {
+            $libelle = substr($libelle, 0, 100);
+        }
+
+        // Transfert des informations du frais dans la table fraishfrefuse
+        // Puis suppression du frais de la table lignefraishorsforfait
+        $pdo->creeFraisRefuse($leVisiteur, $moisPrecedent, $libelle, $date, $montant);
+        $pdo->supprimerFraisHorsForfait($idFraisHF);
+        
+        // TODO: CHECK SI LE FRAIS A BIEN ETE SUPPRIME ET ENREGISTRE AU MOIS COURANT AVANT DE CONFIRMER
+        $_SESSION['modifComptable'] = "Le frais hors forfait a bien été supprimé";
         include 'vues/v_confirmationModifications.inc.php';
         break;
 
