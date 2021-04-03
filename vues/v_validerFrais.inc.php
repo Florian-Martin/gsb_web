@@ -115,6 +115,7 @@ if ($leVisiteur) {
         <div>
             <a href="index.php?uc=gererFrais&action=validerFiche"
                class="btn btn-success btn-lg col-md-offset-5" 
+               onclick="return confirm('Confirmez-vous la validation ?');"
                role="button">
                 <span class="glyphicon glyphicon-ok"></span> VALIDER LA FICHE
             </a>

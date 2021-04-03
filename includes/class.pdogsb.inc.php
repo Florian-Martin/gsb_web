@@ -159,7 +159,8 @@ class PdoGsb
         $requetePrepare = PdoGSB::$monPdo->prepare(
             'SELECT fraisforfait.id as idfrais, '
             . 'fraisforfait.libelle as libelle, '
-            . 'lignefraisforfait.quantite as quantite '
+            . 'lignefraisforfait.quantite as quantite,'
+            . 'fraisforfait.montant '
             . 'FROM lignefraisforfait '
             . 'INNER JOIN fraisforfait '
             . 'ON fraisforfait.id = lignefraisforfait.idfraisforfait '
@@ -616,6 +617,47 @@ class PdoGsb
             $lesLignes[$i]['date'] = dateAnglaisVersFrancais($date);
         }
         return $lesLignes;
+    }
+    
+    /**
+     * Calcule le montant de frais (forfaitisés + HF) valides pour une fiche et un mois
+     * 
+     * @param String $unVisiteur    Le visiteur concerné
+     * @param String $unMois        Le mois concerné
+     */
+    public function calculMontantValide($unVisiteur, $unMois) {
+        $cumul = 0;
+        $lesFraisForfaitises = $this->getLesFraisForfait($unVisiteur, $unMois);
+        foreach ($lesFraisForfaitises as $unFrais) {
+            $cumul += $unFrais['montant'] * $unFrais['quantite'];
+        }
+        
+        $lesFraisHf = $this->getLesFraisHorsForfait($unVisiteur, $unMois);
+        foreach ($lesFraisHf as $unFraisHf) {
+            $cumul += $unFraisHf['montant'];
+        }
+            
+        return $cumul;
+    }
+        
+    /**
+     * Met à jour le montant valide d'une fiche de frais
+     * 
+     * @param String $unVisiteur    Le visiteur concerné
+     * @param String $unMois        Le mois concerné
+     * @param Float $montantValide  Le montant valide
+     */
+    public function majMontantValide($unVisiteur, $unMois, $montantValide) {
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+                'UPDATE fichefrais '
+                . 'SET montantvalide = :unMontant '
+                . 'WHERE idvisiteur = :unVisiteur '
+                . 'AND mois = :unMois'
+                );
+        $requetePrepare->bindParam(':unMontant', $montantValide, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unVisiteur', $unVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $unMois, PDO::PARAM_STR);
+        $requetePrepare->execute();
     }
 }
 

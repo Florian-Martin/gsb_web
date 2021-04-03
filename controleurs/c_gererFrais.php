@@ -111,14 +111,23 @@ switch ($action) {
         // Puis suppression du frais de la table lignefraishorsforfait
         $pdo->creeFraisRefuse($leVisiteur, $moisPrecedent, $libelle, $date, $montant);
         $pdo->supprimerFraisHorsForfait($idFraisHF);
-        
+
         // TODO: CHECK SI LE FRAIS A BIEN ETE SUPPRIME ET ENREGISTRE AU MOIS COURANT AVANT DE CONFIRMER
         $_SESSION['modifComptable'] = "Le frais hors forfait a bien été supprimé";
         include 'vues/v_confirmationModifications.inc.php';
         break;
 
     case 'validerFiche':
-
+        // Somme des frais dont le montant est valide
+        $montantValide = $pdo->calculMontantValide($leVisiteur, $moisPrecedent);
+        
+        // Mise à jour de la fiche
+        $pdo->majMontantValide($leVisiteur, $moisPrecedent, $montantValide);
+        $pdo->majEtatFicheFrais($leVisiteur, $moisPrecedent, 'VA');
+        
+        // TODO: CHECK SI LA FICHE EST BIEN VALIDEE AVANT DE CONFIRMER
+        $_SESSION['modifComptable'] = "La fiche a bien été validée";
+        include 'vues/v_confirmationModifications.inc.php';
         break;
 }
 
