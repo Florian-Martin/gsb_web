@@ -1,6 +1,6 @@
 <?php
 /**
- * Vue Entête
+ * Vue Entête comptable
  *
  * PHP Version 7
  *
@@ -35,7 +35,7 @@
             Accueil
         </a>
     </li>
-    <li <?php if ($uc == 'gererFrais') { ?>
+    <li <?php if ($uc == 'gererFrais' && $_SESSION['etape'] != "mp") { ?>
             class="active"<?php } ?>>
         <a href="index.php?uc=gererFrais">
             <span class="glyphicon glyphicon-ok"></span>
@@ -44,7 +44,7 @@
     </li>
     <li <?php if ($uc == 'etatFrais') { ?>
             class="active"<?php } ?>>
-        <a href="index.php?uc=etatFrais&action=selectionnerMois">
+        <a href="index.php?uc=etatFrais&action=selectionVisiteur">
             <span class="glyphicon glyphicon-eur"></span>
             Suivre le paiement des fiches de frais
         </a>

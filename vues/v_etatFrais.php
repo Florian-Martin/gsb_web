@@ -8,12 +8,15 @@
  * @package   GSB
  * @author    Réseau CERTA <contact@reseaucerta.org>
  * @author    José GIL <jgil@ac-nice.fr>
+ * @author    Florian MARTIN <florian.martin7469@gmail.com>
  * @copyright 2017 Réseau CERTA
  * @license   Réseau CERTA
  * @version   GIT: <0>
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 ?>
+
+<!DOCTYPE html>
 <hr>
 <div class="panel panel-primary">
     <div class="panel-heading">Fiche de frais du mois 
@@ -51,7 +54,7 @@
 </div>
 <div class="panel panel-info">
     <div class="panel-heading">Descriptif des éléments hors forfait - 
-        <?php echo $nbJustificatifs ?> justificatifs reçus</div>
+        <?php echo $nbJustificatifs ?> justificatifs reçu(s)</div>
     <table class="table table-bordered table-responsive">
         <tr>
             <th class="date">Date</th>
@@ -88,3 +91,15 @@
         ?>
     </table>
 </div>
+<?php if ($type_usr == 2) { ?>
+<div>
+    <a href="index.php?uc=gererFrais&action=mettreEnPaiement"
+       class="btn btn-success btn-lg col-md-offset-5" 
+       onclick="return confirm('Confirmez-vous la mise en paiement ?');"
+       role="button">
+        <span class="glyphicon glyphicon-ok"></span> METTRE EN PAIEMENT
+    </a>
+</div>
+<?php
+}
+?>

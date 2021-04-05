@@ -1,6 +1,6 @@
 <?php
 /**
- * Vue ConfirmationModifications
+ * Vue Confirmation de modifications effectuées par un comptable
  *
  * PHP Version 7
  *
@@ -15,7 +15,18 @@
  */
 
 ?>
+<!DOCTYPE html>
 <div class="success alert-success" role="alert">
     <p><?php echo $_SESSION['modifComptable'] ?></p>
 </div>
+<?php
+switch ($_SESSION['etape']) {
+case 'mp':
+    header("Refresh: 1;URL=index.php?uc=etatFrais&action=selectionVisiteur");
+    break;
+
+default:
+    break;
+}
+?>
     

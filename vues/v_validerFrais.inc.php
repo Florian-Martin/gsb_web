@@ -16,11 +16,9 @@
 ?>
 
 <!DOCTYPE html>
-
 <?php
 require 'v_listeFichesVisiteursMois.inc.php';
 ?>
-
 <?php
 if ($leVisiteur) {
     ?>
@@ -88,7 +86,6 @@ if ($leVisiteur) {
                             <td>          
                                 <form action="index.php?uc=gererFrais" 
                                       method="post" role="form">
-
                                     <a href="index.php?uc=gererFrais&action=reporterFraisHF&idFrais=<?php echo $id ?>"
                                        class="btn btn-success"
                                        onclick="return confirm('Confirmez-vous le report de ce frais?');">

@@ -1,6 +1,6 @@
 <?php
 /**
- * Vue Liste des mois
+ * Vue Sélection d'un visiteur et d'un mois
  *
  * PHP Version 7
  *
@@ -21,7 +21,13 @@
     <h4>Sélectionner une fiche : </h4>
 </div>
 <div>
-    <form action="index.php?uc=gererFrais" 
+    <form action="index.php?<?php
+    if ($_SESSION['etape'] == "mp") {
+        echo 'uc=etatFrais&action=voirEtatFrais';
+    } else {
+        echo 'uc=gererFrais';
+    }
+    ?>" 
           method="post" role="form">
         <div class="form-inline">
             <label for="lstVisiteurs" accesskey="n">Visiteur : </label>

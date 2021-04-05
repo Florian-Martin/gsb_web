@@ -8,6 +8,7 @@
  * @package   GSB
  * @author    Réseau CERTA <contact@reseaucerta.org>
  * @author    José GIL <jgil@ac-nice.fr>
+ * @author    Florian MARTIN <florian.martin7469@gmail.com>
  * @copyright 2017 Réseau CERTA
  * @license   Réseau CERTA
  * @version   GIT: <0>
@@ -15,6 +16,7 @@
  */
 ?>
 
+<!DOCTYPE html>
 <div id="accueil">
     <h2>
         Gestion des frais<small> - <?php

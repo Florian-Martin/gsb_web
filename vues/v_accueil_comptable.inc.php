@@ -1,6 +1,6 @@
 <?php
 /**
- * Vue Accueil
+ * Vue Accueil comptable
  *
  * PHP Version 7
  *
@@ -16,6 +16,7 @@
  */
 ?>
 
+<!DOCTYPE html>
 <a href="index.php?uc=gererFrais"
    class="btn btn-success btn-lg" 
    role="button">
@@ -23,7 +24,7 @@
     <br>Valider les fiches de frais
 </a>
 
-<a href="index.php?uc=etatFrais&action=selectionnerMois"
+<a href="index.php?uc=etatFrais&action=selectionVisiteur"
    class="btn btn-primary btn-lg" 
    role="button">
     <span class="glyphicon glyphicon-eur"></span>

@@ -8,6 +8,7 @@
  * @package   GSB
  * @author    Réseau CERTA <contact@reseaucerta.org>
  * @author    José GIL <jgil@ac-nice.fr>
+ * @author    Florian MARTIN <florian.martin7469@gmail.com>
  * @copyright 2017 Réseau CERTA
  * @license   Réseau CERTA
  * @version   GIT: <0>
@@ -27,11 +28,10 @@
         <link href="./styles/bootstrap/bootstrap.css" rel="stylesheet">
     </head>
 
-
     <body>
         <div class="container">
             <?php
-            $uc = filter_input(INPUT_GET, 'uc', FILTER_SANITIZE_STRING);
+            $uc = filter_input(INPUT_GET, 'uc', FILTER_SANITIZE_STRING);            
             if ($estConnecte) {
                 ?>
                 <div class="header">
@@ -46,13 +46,14 @@
                         <div class="col-md-8">
                             <?php
                             switch ($type_usr) {
-                                case '1':
-                                    include_once 'v_entete_visiteur.inc.php';
-                                    break;
+                            case '1':
+                                include_once 'v_entete_visiteur.inc.php';
+                                break;
 
-                                case '2':
-                                    include_once 'v_entete_comptable.inc.php';
-                                    break;
+                            case '2':
+                                $_SESSION['etape'] = "va";
+                                include_once 'v_entete_comptable.inc.php';
+                                break;
                             }
                             ?>
                         </div>

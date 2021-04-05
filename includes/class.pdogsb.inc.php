@@ -590,6 +590,8 @@ class PdoGsb
 
     
     /**
+     * Récupère la liste des frais hors forfait refusés
+     * 
      * Retourne sous forme d'un tableau associatif toutes les lignes de frais
      * hors forfait refusées concernées par les deux arguments.
      * La boucle foreach ne peut être utilisée ici car on procède

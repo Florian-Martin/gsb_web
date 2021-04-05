@@ -25,7 +25,6 @@ if ($estConnecte) {
     $type_usr = $_SESSION['type_usr'];
 }
 
-
 require 'vues/v_entete.php';
 
 $uc = filter_input(INPUT_GET, 'uc', FILTER_SANITIZE_STRING);

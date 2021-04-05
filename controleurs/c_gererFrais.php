@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Gestion des frais
  *
@@ -24,145 +23,161 @@ $moisPrecedent = getMoisPrecedent($mois);
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 
 switch ($action) {
-    case 'saisirFrais':
-        if ($pdo->estPremierFraisMois($idUtilisateur, $mois)) {
-            $pdo->creeNouvellesLignesFrais($idUtilisateur, $mois);
-        }
-        break;
+case 'saisirFrais':
+    if ($pdo->estPremierFraisMois($idUtilisateur, $mois)) {
+        $pdo->creeNouvellesLignesFrais($idUtilisateur, $mois);
+    }
+    break;
 
-    case 'validerMajFraisForfait':
-        $lesFrais = filter_input(INPUT_POST, 'lesFrais', FILTER_DEFAULT, FILTER_FORCE_ARRAY);
-        if (lesQteFraisValides($lesFrais)) {
-            if ($type_usr == 2) {
-                $pdo->majFraisForfait($leVisiteur, $moisPrecedent, $lesFrais);
-                $_SESSION['modifComptable'] = "Les frais forfaitisés ont bien été modifiés";
-                include 'vues/v_confirmationModifications.inc.php';
-            } else {
-                $pdo->majFraisForfait($idUtilisateur, $mois, $lesFrais);
-            }
+case 'validerMajFraisForfait':
+    $lesFrais = filter_input(INPUT_POST, 'lesFrais', FILTER_DEFAULT, FILTER_FORCE_ARRAY);
+    if (lesQteFraisValides($lesFrais)) {
+        if ($type_usr == 2) {
+            $pdo->majFraisForfait($leVisiteur, $moisPrecedent, $lesFrais);
+            $_SESSION['modifComptable'] = "Les frais forfaitisés ont bien été modifiés";
+            include 'vues/v_confirmationModifications.inc.php';
         } else {
-            ajouterErreur('Les valeurs des frais doivent être numériques');
-            include 'vues/v_erreurs.php';
+            $pdo->majFraisForfait($idUtilisateur, $mois, $lesFrais);
         }
-        break;
+    } else {
+        ajouterErreur('Les valeurs des frais doivent être numériques');
+        include 'vues/v_erreurs.php';
+    }
+    break;
 
-    case 'validerCreationFrais':
-        $dateFrais = filter_input(INPUT_POST, 'dateFrais', FILTER_SANITIZE_STRING);
-        $libelle = filter_input(INPUT_POST, 'libelle', FILTER_SANITIZE_STRING);
-        $montant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
-        valideInfosFrais($dateFrais, $libelle, $montant);
-        if (nbErreurs() != 0) {
-            include 'vues/v_erreurs.php';
-        } else {
-            $pdo->creeNouveauFraisHorsForfait(
-                    $idUtilisateur,
-                    $mois,
-                    $libelle,
-                    $dateFrais,
-                    $montant
-            );
-        }
-        break;
+case 'validerCreationFrais':
+    $dateFrais = filter_input(INPUT_POST, 'dateFrais', FILTER_SANITIZE_STRING);
+    $libelle = filter_input(INPUT_POST, 'libelle', FILTER_SANITIZE_STRING);
+    $montant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
+    valideInfosFrais($dateFrais, $libelle, $montant);
+    if (nbErreurs() != 0) {
+        include 'vues/v_erreurs.php';
+    } else {
+        $pdo->creeNouveauFraisHorsForfait(
+            $idUtilisateur,
+            $mois,
+            $libelle,
+            $dateFrais,
+            $montant
+        );
+    }
+    break;
+ 
+case 'supprimerFrais':
+    $idFrais = filter_input(INPUT_GET, 'idFrais', FILTER_SANITIZE_STRING);
+    $pdo->supprimerFraisHorsForfait($idFrais);
+    break;
 
-    case 'supprimerFrais':
-        $idFrais = filter_input(INPUT_GET, 'idFrais', FILTER_SANITIZE_STRING);
-        $pdo->supprimerFraisHorsForfait($idFrais);
-        break;
+case 'reporterFraisHF':
+    $idFraisHF = filter_input(INPUT_GET, 'idFrais', FILTER_SANITIZE_STRING);
+    // Récupération des informations du frais à reporter
+    $leFraisHF = $pdo->getUnFraisHF($idFraisHF);
+    $libelle = $leFraisHF['libelle'];
+    // Conversion de la date pour réutiliser la fonction de création de frais HF
+    $date = dateAnglaisVersFrancais($leFraisHF['date']);
+    $montant = $leFraisHF['montant'];
 
-    case 'reporterFraisHF':
-        $idFraisHF = filter_input(INPUT_GET, 'idFrais', FILTER_SANITIZE_STRING);
+    // Report du frais HF au mois prochain
+    // Puis suppression du frais de la liste de frais HF du mois N-1
+    if ($pdo->estPremierFraisMois($leVisiteur, $mois)) {
+        $pdo->creeNouvellesLignesFrais($leVisiteur, $mois);
+    }
+    $pdo->creeNouveauFraisHorsForfait($leVisiteur, $mois, $libelle, $date, $montant);
+    $pdo->supprimerFraisHorsForfait($idFraisHF);
 
-        // Récupération des informations du frais à reporter
-        $leFraisHF = $pdo->getUnFraisHF($idFraisHF);
-        $libelle = $leFraisHF['libelle'];
-        // Conversion de la date pour réutiliser la fonction de création de frais HF
-        $date = dateAnglaisVersFrancais($leFraisHF['date']);
-        $montant = $leFraisHF['montant'];
+    // TODO: CHECK SI LE FRAIS A BIEN ETE SUPPRIME ET ENREGISTRE AU MOIS COURANT AVANT DE CONFIRMER
+    $_SESSION['modifComptable'] = "Le frais hors forfait a bien été reporté";
+    include 'vues/v_confirmationModifications.inc.php';
+    break;
 
-        // Report du frais HF au mois prochain
-        // Puis suppression du frais de la liste de frais HF du mois N-1
-        if ($pdo->estPremierFraisMois($leVisiteur, $mois)) {
-            $pdo->creeNouvellesLignesFrais($leVisiteur, $mois);
-        }
-        $pdo->creeNouveauFraisHorsForfait($leVisiteur, $mois, $libelle, $date, $montant);
-        $pdo->supprimerFraisHorsForfait($idFraisHF);
+case 'refuserFraisHF':
+    $idFraisHF = filter_input(INPUT_GET, 'idFrais', FILTER_SANITIZE_STRING);
 
-        // TODO: CHECK SI LE FRAIS A BIEN ETE SUPPRIME ET ENREGISTRE AU MOIS COURANT AVANT DE CONFIRMER
-        $_SESSION['modifComptable'] = "Le frais hors forfait a bien été reporté";
-        include 'vues/v_confirmationModifications.inc.php';
-        break;
+    // Récupération des informations du frais à supprimer
+    $leFraisHF = $pdo->getUnFraisHF($idFraisHF);
+    $libelle = "REFUSE : " . $leFraisHF['libelle'];
+    $date = $leFraisHF['date'];
+    $montant = $leFraisHF['montant'];
 
-    case 'refuserFraisHF':
-        $idFraisHF = filter_input(INPUT_GET, 'idFrais', FILTER_SANITIZE_STRING);
+    // Troncature du libellé si après ajout du préfixe "REFUSE" la taille 
+    // du texte dépasse la taille maximale du champ concerné dans la base
+    if (strlen($libelle) > 100) {
+        $libelle = substr($libelle, 0, 100);
+    }
 
-        // Récupération des informations du frais à supprimer
-        $leFraisHF = $pdo->getUnFraisHF($idFraisHF);
-        $libelle = "REFUSE : " . $leFraisHF['libelle'];
-        $date = $leFraisHF['date'];
-        $montant = $leFraisHF['montant'];
+    // Transfert des informations du frais dans la table fraishfrefuse
+    // Puis suppression du frais de la table lignefraishorsforfait
+    $pdo->creeFraisRefuse($leVisiteur, $moisPrecedent, $libelle, $date, $montant);
+    $pdo->supprimerFraisHorsForfait($idFraisHF);
 
-        // Troncature du libellé si après ajout du préfixe "REFUSE" la taille 
-        // du texte dépasse la taille maximale du champ concerné dans la base
-        if (strlen($libelle) > 100) {
-            $libelle = substr($libelle, 0, 100);
-        }
+    // TODO: CHECK SI LE FRAIS A BIEN ETE SUPPRIME ET ENREGISTRE AU MOIS COURANT AVANT DE CONFIRMER
+    $_SESSION['modifComptable'] = "Le frais hors forfait a bien été supprimé.";
+    include 'vues/v_confirmationModifications.inc.php';
+    break;
 
-        // Transfert des informations du frais dans la table fraishfrefuse
-        // Puis suppression du frais de la table lignefraishorsforfait
-        $pdo->creeFraisRefuse($leVisiteur, $moisPrecedent, $libelle, $date, $montant);
-        $pdo->supprimerFraisHorsForfait($idFraisHF);
+case 'validerFiche':
+    // Somme des frais dont le montant est valide
+    $montantValide = $pdo->calculMontantValide($leVisiteur, $moisPrecedent);
 
-        // TODO: CHECK SI LE FRAIS A BIEN ETE SUPPRIME ET ENREGISTRE AU MOIS COURANT AVANT DE CONFIRMER
-        $_SESSION['modifComptable'] = "Le frais hors forfait a bien été supprimé";
-        include 'vues/v_confirmationModifications.inc.php';
-        break;
+    // Mise à jour de la fiche
+    $pdo->majMontantValide($leVisiteur, $moisPrecedent, $montantValide);
+    $pdo->majEtatFicheFrais($leVisiteur, $moisPrecedent, 'VA');
 
-    case 'validerFiche':
-        // Somme des frais dont le montant est valide
-        $montantValide = $pdo->calculMontantValide($leVisiteur, $moisPrecedent);
-        
-        // Mise à jour de la fiche
-        $pdo->majMontantValide($leVisiteur, $moisPrecedent, $montantValide);
-        $pdo->majEtatFicheFrais($leVisiteur, $moisPrecedent, 'VA');
-        
-        // TODO: CHECK SI LA FICHE EST BIEN VALIDEE AVANT DE CONFIRMER
-        $_SESSION['modifComptable'] = "La fiche a bien été validée";
-        include 'vues/v_confirmationModifications.inc.php';
-        break;
+    // TODO: CHECK SI LA FICHE EST BIEN VALIDEE AVANT DE CONFIRMER
+    $_SESSION['modifComptable'] = "La fiche a bien été validée.";
+    include 'vues/v_confirmationModifications.inc.php';
+    break;
+
+case 'mettreEnPaiement':
+    $pdo->majEtatFicheFrais($leVisiteur, $moisPrecedent, 'MP');
+
+    // TODO: CHECK SI LE FRAIS A BIEN ETE PASSE en 'MP' AVANT DE CONFIRMER
+    $_SESSION['modifComptable'] = "La fiche est en paiement.";
+    $_SESSION['etape'] = "mp";
+    include 'vues/v_confirmationModifications.inc.php';
+    break;
+    
+default :
+    break;
 }
 
 switch ($type_usr) {
-    // Un visiteur
-    case '1':
-        $numAnnee = substr($mois, 0, 4);
-        $numMois = substr($mois, 4, 2);
-        $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idUtilisateur, $mois);
-        $lesFraisForfait = $pdo->getLesFraisForfait($idUtilisateur, $mois);
-        require 'vues/v_listeFraisForfait.php';
-        require 'vues/v_listeFraisHorsForfait.php';
-        break;
+// Un visiteur
+case '1':
+    $numAnnee = substr($mois, 0, 4);
+    $numMois = substr($mois, 4, 2);
+    $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idUtilisateur, $mois);
+    $lesFraisForfait = $pdo->getLesFraisForfait($idUtilisateur, $mois);
+    include 'vues/v_listeFraisForfait.php';
+    include 'vues/v_listeFraisHorsForfait.php';
+    break;
 
-    // Un comptable
-    case '2':
-        $lesVisiteurs = $pdo->getLesVisiteursCompta($moisPrecedent, 'CL');
-        $numAnnee = substr($moisPrecedent, 0, 4);
-        $numMois = substr($moisPrecedent, 4, 2);
+// Un comptable
+case '2':
+    $numAnnee = substr($moisPrecedent, 0, 4);
+    $numMois = substr($moisPrecedent, 4, 2);
 
-        // Id du visiteur sélectionné dans le combo
-        $_SESSION['leVisiteur'] = filter_input(INPUT_POST, "lstVisiteurs",
-                FILTER_SANITIZE_STRING);
-        $leVisiteur = $_SESSION['leVisiteur'];
+    $lesVisiteurs = $pdo->getLesVisiteursCompta($moisPrecedent, 'CL');
 
-        if ($leVisiteur) {
-            $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($leVisiteur, $moisPrecedent);
-            $lesFraisForfait = $pdo->getLesFraisForfait($leVisiteur, $moisPrecedent);
-            $nbJustificatifs = $pdo->getNbjustificatifs($leVisiteur, $moisPrecedent);
+    // Id du visiteur sélectionné dans le combo
+    $_SESSION['leVisiteur'] = filter_input(
+        INPUT_POST, 
+        "lstVisiteurs",
+        FILTER_SANITIZE_STRING
+    );
+    $leVisiteur = $_SESSION['leVisiteur'];
+    $_SESSION['etape'] = "va";
 
-            if ($nbJustificatifs > sizeof($lesFraisHorsForfait)) {
-                $nbJustificatifs = sizeof($lesFraisHorsForfait);
-                $pdo->setNbJustificatifs($leVisiteur, $moisPrecedent, $nbJustificatifs);
-            }
+    if ($leVisiteur) {
+        $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($leVisiteur, $moisPrecedent);
+        $lesFraisForfait = $pdo->getLesFraisForfait($leVisiteur, $moisPrecedent);
+        $nbJustificatifs = $pdo->getNbjustificatifs($leVisiteur, $moisPrecedent);
+
+        if ($nbJustificatifs > sizeof($lesFraisHorsForfait)) {
+            $nbJustificatifs = sizeof($lesFraisHorsForfait);
+            $pdo->setNbJustificatifs($leVisiteur, $moisPrecedent, $nbJustificatifs);
         }
-        require 'vues/v_validerFrais.inc.php';
-        break;
+    }
+    include 'vues/v_validerFrais.inc.php';
+    break;
 }
