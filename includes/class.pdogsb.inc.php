@@ -24,12 +24,18 @@
 
 class PdoGsb
 {
+    /*
     private static $serveur = 'mysql:host=localhost';
-    private static $bdd = 'dbname=gsb_frais';
-    private static $user = 'userGsb';
-    private static $mdp = 'secret';
+    private static $bdd = 'dbname=gsb_tests';
+    private static $user = 'root';
+    private static $mdp = '';
     private static $monPdo;
     private static $monPdoGsb = null;
+     * 
+     */
+    
+
+
 
     /**
      * Constructeur privé, crée l'instance de PDO qui sera sollicitée
@@ -69,25 +75,25 @@ class PdoGsb
     }
 
     /**
-     * Retourne les informations d'un utilisateur
-     *
-     * @param String $login Login de l'utilisateur
-     * @param String $mdp   Mot de passe de l'utilisateur
-     *
-     * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
-     */
-    public function getInfosUtilisateur($login, $mdp)
+    * Retourne les informations d'un utilisateur
+    *
+    * @param String $login Login de l'utilisateur
+    *
+    * @return              id, nom, prénom, type d'utilisateur et mot de passe 
+    *                      sous la forme d'un tableau associatif
+    */
+    public function getInfosUtilisateur($login)
     {
         // rajouter la récupération du libellé de la catégorie d'employé
         $requetePrepare = PdoGsb::$monPdo->prepare(
             'SELECT utilisateur.id AS id, utilisateur.nom AS nom, '
             . 'utilisateur.prenom AS prenom, '
-            . 'utilisateur.type_utilisateur AS type_utilisateur '
+            . 'utilisateur.type_utilisateur AS type_utilisateur, '
+            . 'utilisateur.mdp AS mdp '
             . 'FROM utilisateur '
-            . 'WHERE utilisateur.login = :unLogin AND utilisateur.mdp = :unMdp'
+            . 'WHERE utilisateur.login = :unLogin'
         );
         $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
-        $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
         $requetePrepare->execute();
         return $requetePrepare->fetch();
     }

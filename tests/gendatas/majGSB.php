@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Génération d'un jeu d'essai
  *
@@ -14,11 +15,22 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 
+$login = "mafl8672_visiteur";
+$mdp = "LtUaRGniaN4+";
+$bd = "mafl8672_gsb_frais";
+$serveur = "martinflorian.fr";
+
 $moisDebut = '201909';
 require './fonctions.php';
 
-$pdo = new PDO('mysql:host=localhost;dbname=gsb_frais', 'root', '');
-$pdo->query('SET CHARACTER SET utf8');
+try {
+    $pdo = new PDO("mysql:host=$serveur;dbname=$bd", $login, $mdp);
+    $pdo->query('SET CHARACTER SET utf8');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    print "Erreur%" . $e->getMessage();
+}
+
 
 set_time_limit(0);
 creationFichesFrais($pdo);
@@ -27,6 +39,6 @@ creationFraisHorsForfait($pdo);
 majFicheFrais($pdo);
 echo '<br>' . getNbTable($pdo, 'fichefrais') . ' fiches de frais créées !';
 echo '<br>' . getNbTable($pdo, 'lignefraisforfait')
-        . ' lignes de frais au forfait créées !';
+ . ' lignes de frais au forfait créées !';
 echo '<br>' . getNbTable($pdo, 'lignefraishorsforfait')
-        . ' lignes de frais hors forfait créées !';
+ . ' lignes de frais hors forfait créées !';

@@ -23,7 +23,7 @@
  * @return Array de visiteurs
  */
 function getLesVisiteurs($pdo) {
-    $req = 'select * from utilisateur where type_utilisateur = 1';
+    $req = 'select * from utilisateur';
     $res = $pdo->query($req);
     $lesLignes = $res->fetchAll();
     return $lesLignes;
